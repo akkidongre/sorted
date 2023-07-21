@@ -1,0 +1,13 @@
+.modal {
+    --bs-modal-zindex: 900;
+    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+
+    &-dialog {
+        margin: 0;
+        flex: 1;
+    }
+}

@@ -1,0 +1,18 @@
+<div class="modal modal-lg" (click)="onClose()">
+    <div class="modal-dialog" (click)="$event.stopPropagation();">
+        <div class="modal-content">
+            <!-- <div class="modal-header">
+                <h4 class="modal-title">
+                    <ng-content select="[modalTitle]"></ng-content>
+                </h4>
+                <button type="button" class="btn-close" aria-label="Close"></button>
+            </div> -->
+            <div class="modal-body">
+                <ng-content select="[modalBody]"></ng-content>
+            </div>
+            <!-- <div class="modal-footer">
+                <ng-content select="[modalFooter]"></ng-content>
+            </div> -->
+        </div>
+    </div>
+</div>

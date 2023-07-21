@@ -1,0 +1,13 @@
+<app-header></app-header>
+
+<div class="container-fluid mt-5">
+  <app-add-todo></app-add-todo>
+
+  <hr />
+
+  <app-card-list></app-card-list>
+
+  <app-edit-todo *ngIf="showEditTodo"></app-edit-todo>
+
+  <router-outlet></router-outlet>
+</div>

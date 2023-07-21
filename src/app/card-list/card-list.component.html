@@ -1,0 +1,23 @@
+<ng-container *ngIf="pinnedIndices.length > 0">
+    <div class="d-flex justify-content-between align-items-center">
+        <h5 class="text-primary m-0">Pinned Lists</h5>
+    </div>
+    <div class="card-container pt-4 pb-4">
+        <ng-container *ngFor="let listItem of lists; let i = index;">
+            <app-card *ngIf="pinnedIndices.includes(i)" [list]="listItem" [index]="i" [pinned]="true"></app-card>
+        </ng-container>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="lists.length > pinnedIndices.length">
+    <div class="d-flex justify-content-between align-items-center">
+        <h5 class="text-primary m-0">
+            {{ pinnedIndices.length > 0 ? 'Others' : 'Your Lists' }}
+        </h5>
+    </div>
+    <div class="card-container pt-4 pb-4">
+        <ng-container *ngFor="let listItem of lists; let i = index;">
+            <app-card *ngIf="!pinnedIndices.includes(i)" [list]="listItem" [index]="i" [pinned]="false"></app-card>
+        </ng-container>
+    </div>
+</ng-container>

@@ -1,0 +1,76 @@
+<div class="card" *ngIf="list" (click)="onCardClick()">
+    <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <h5 class="card-title m-0">{{ list.title }}</h5>
+            <div class="card__actions">
+                <svg *ngIf="!pinned" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-pin text-accent me-2" viewBox="0 0 16 16" (click)="onPinClick(); $event.stopPropagation();">
+                    <path
+                        d="M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5c0 .68-.342 1.174-.646 1.479-.126.125-.25.224-.354.298v4.431l.078.048c.203.127.476.314.751.555C12.36 7.775 13 8.527 13 9.5a.5.5 0 0 1-.5.5h-4v4.5c0 .276-.224 1.5-.5 1.5s-.5-1.224-.5-1.5V10h-4a.5.5 0 0 1-.5-.5c0-.973.64-1.725 1.17-2.189A5.921 5.921 0 0 1 5 6.708V2.277a2.77 2.77 0 0 1-.354-.298C4.342 1.674 4 1.179 4 .5a.5.5 0 0 1 .146-.354zm1.58 1.408-.002-.001.002.001zm-.002-.001.002.001A.5.5 0 0 1 6 2v5a.5.5 0 0 1-.276.447h-.002l-.012.007-.054.03a4.922 4.922 0 0 0-.827.58c-.318.278-.585.596-.725.936h7.792c-.14-.34-.407-.658-.725-.936a4.915 4.915 0 0 0-.881-.61l-.012-.006h-.002A.5.5 0 0 1 10 7V2a.5.5 0 0 1 .295-.458 1.775 1.775 0 0 0 .351-.271c.08-.08.155-.17.214-.271H5.14c.06.1.133.191.214.271a1.78 1.78 0 0 0 .37.282z" />
+                </svg>
+
+                <svg *ngIf="pinned" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-pin-fill text-accent me-2" viewBox="0 0 16 16" (click)="onPinClick(); $event.stopPropagation();">
+                    <path
+                        d="M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5c0 .68-.342 1.174-.646 1.479-.126.125-.25.224-.354.298v4.431l.078.048c.203.127.476.314.751.555C12.36 7.775 13 8.527 13 9.5a.5.5 0 0 1-.5.5h-4v4.5c0 .276-.224 1.5-.5 1.5s-.5-1.224-.5-1.5V10h-4a.5.5 0 0 1-.5-.5c0-.973.64-1.725 1.17-2.189A5.921 5.921 0 0 1 5 6.708V2.277a2.77 2.77 0 0 1-.354-.298C4.342 1.674 4 1.179 4 .5a.5.5 0 0 1 .146-.354z" />
+                </svg>
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-trash text-danger" viewBox="0 0 16 16" (click)="onDeleteClick(); $event.stopPropagation();">
+                    <path
+                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                    <path
+                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                </svg>
+            </div>
+        </div>
+        <p class="card-subtitle text-body-secondary text-truncate" *ngIf="list.description">
+            {{ list.description }}
+        </p>
+
+        <ul class="ps-2 mt-4" *ngIf="list.todoList.length > 0">
+            <li class="list-style-none mb-3" *ngFor="let todo of list.todoList; let i = index;">
+                <div class="d-flex align-items-start">
+                    <input class="form-check-input me-2" type="checkbox" [(ngModel)]="todo.isFinished"
+                        (click)="$event.stopPropagation()" (change)="onCheckTodo()" />
+                    <div class="full-width">
+                        <label class="form-check-label d-flex align-items-center">
+                            {{ todo.title }}
+                        </label>
+                        <p class="fs-12 text-secondary text-truncate mb-1" *ngIf="todo.description">{{ todo.description
+                            }}
+                        </p>
+                        <p class="fs-12 date mb-2" *ngIf="todo.dueDate">
+                            <ng-container *ngIf="checkIfDueDateIsToday(todo.dueDate)">
+                                Today {{ todo.dueDate | date: 'h:mm a' }}
+                            </ng-container>
+                            <ng-container *ngIf="checkIfDueDateIsTomorrow(todo.dueDate)">
+                                Tomorrow {{ todo.dueDate | date: 'h:mm a' }}
+                            </ng-container>
+                            <ng-container
+                                *ngIf="!checkIfDueDateIsToday(todo.dueDate) && !checkIfDueDateIsTomorrow(todo.dueDate)">
+                                {{ todo.dueDate | date: 'medium' }}
+                            </ng-container>
+                        </p>
+                    </div>
+                </div>
+
+                <ul class="ps-4 mt-2" *ngIf="todo.subTodoList.length > 0">
+                    <li *ngFor="let task of todo.subTodoList; let j = index;"
+                        class="d-flex align-items-start mb-2 list-style-none">
+                        <input class="form-check-input me-2" type="checkbox" [(ngModel)]="task.isFinished"
+                            (click)="$event.stopPropagation()" (change)="onCheckSubTodo()" />
+                        <div class="full-width">
+                            <label class="form-check-label d-flex align-items-center">
+                                {{ task.title }}
+                            </label>
+                            <p class="fs-12 text-secondary text-truncate mb-1" *ngIf="task.description">
+                                {{ task.description }}</p>
+                            <p class="fs-12 date" *ngIf="task.dueDate">{{ task.dueDate | date:'medium' }}</p>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

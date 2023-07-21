@@ -1,0 +1,45 @@
+<form [formGroup]="todoListForm" (ngSubmit)="onSubmit()" (keydown.enter)="addTodoList(); $event.preventDefault();">
+    <input class="form-control title-input" type="text" placeholder="Title" formControlName="title" #titleInput autofocus />
+    <input class="form-control form-control-sm description-input" type="text" placeholder="Description" formControlName="description">
+    <ng-container formArrayName="todoList">
+        <ng-container *ngFor="let todo of todoList.controls; let i = index">
+            <ng-container [formGroupName]="i">
+                <app-form-field #listItem [checkboxControl]="getFormControl(i, 'isFinished')"
+                    [titleControl]="getFormControl(i, 'title')" [dueDateControl]="getFormControl(i, 'dueDate')"
+                    [descriptionControl]="getFormControl(i, 'description')"
+                    placeholder="List item (Enter to add task, Shift + Enter to add subtask)"
+                    (keydown.shift.enter)="addSubTodoList(i); $event.preventDefault()" (addBtnClick)="addSubTodoList(i)"
+                    (deleteBtnClick)="deleteTodoList(i)"></app-form-field>
+
+                <ng-container formArrayName="subTodoList" *ngIf="getSubTodoList(i).controls.length > 0">
+                    <ng-container *ngFor="let subTodo of getSubTodoList(i).controls; let j = index">
+                        <ng-container [formGroupName]="j">
+                            <app-form-field #subListItem [checkboxControl]="getSubFormControl(i, j, 'isFinished')"
+                                [titleControl]="getSubFormControl(i, j, 'title')"
+                                [dueDateControl]="getSubFormControl(i, j, 'dueDate')"
+                                [descriptionControl]="getFormControl(i, 'description')"
+                                placeholder="Sub list item (Shift + Enter to add another)" [isSubList]="true"
+                                (keydown.shift.enter)="addSubTodoList(i); $event.preventDefault()"
+                                (addBtnClick)="addSubTodoList(i)"
+                                (deleteBtnClick)="deleteSubTodoList(i, j)"></app-form-field>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <div class="d-flex justify-content-between align-items-center mt-2">
+        <button type="button" class="btn btn--add-list-item " (click)="addTodoList()">
+            + Add a task
+        </button>
+        <button class="btn btn--save" type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg"
+                viewBox="0 0 16 16">
+                <path
+                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+            </svg>
+            Save
+        </button>
+    </div>
+</form>
