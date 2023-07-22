@@ -10,7 +10,6 @@ import { AppService } from 'src/app/shared/services/app.service';
 })
 export class CardComponent {
   @Input() list!: List;
-  @Input() index!: number;
   @Input() pinned = false;
 
   constructor(
@@ -43,27 +42,27 @@ export class CardComponent {
   }
 
   onCheckTodo() {
-    this.appService.updateTodoList(this.list, this.index);
+    this.appService.updateTodoList(this.list);
   }
 
   onCheckSubTodo() {
-    this.appService.updateTodoList(this.list, this.index);
+    this.appService.updateTodoList(this.list);
   }
 
   onCardClick() {
     console.log("On card click");
-    this.appService.selectedList$.next(this.index);
+    this.appService.selectedList$.next(this.list.id);
   }
 
   onPinClick() {
     if (this.pinned) {
-      this.appService.unpinTodoList(this.index);
+      this.appService.unpinTodoList(this.list.id);
     } else {
-      this.appService.pinTodoList(this.index);
+      this.appService.pinTodoList(this.list.id);
     }
   }
 
   onDeleteClick() {
-    this.appService.deleteTodoList(this.index);
+    this.appService.deleteTodoList(this.list.id);
   }
 }

@@ -10,43 +10,34 @@ export class AppService {
   private pinnedLocalStorageKey: string = 'pinned';
 
   lists: List[] = [];
-  pinnedLists: number[] = [];
+  pinnedLists: string[] = [];
 
   listCreated$ = new Subject<void>();
   saveList$ = new Subject<void>();
 
-  selectedList$ = new BehaviorSubject<number>(-1);
+  selectedList$ = new BehaviorSubject<string>('');
 
   constructor() { }
 
   saveTodoList(todoList: any) {
-    todoList['createdAt'] = new Date().toString();
-    todoList['id'] = todoList['createdAt'];
+    todoList['updatedAt'] = new Date().toISOString();
+    todoList['id'] = todoList['updatedAt'];
 
-    // if (this.lists.length > 0) {
     this.lists = [...this.lists, todoList];
     localStorage.setItem(this.localStorageKey, JSON.stringify(this.lists));
-    // } else {
-    //   const listsStr = localStorage.getItem(this.localStorageKey);
-    //   let listsArr = [];
-    //   if (listsStr) {
-    //     listsArr = JSON.parse(listsStr);
-    //   }
 
-    //   listsArr.push(todoList);
-    //   this.lists = listsArr;
-    //   localStorage.setItem(this.localStorageKey, JSON.stringify(listsArr));
-    // }
     this.listCreated$.next();
   }
 
-  updateTodoList(todoList: any, index: number) {
-    if (index < 0 || index > this.lists.length) {
+  updateTodoList(todoList: any) {
+    if (!todoList) {
       return;
     }
 
+    todoList['updatedAt'] = new Date().toISOString();
     const listArr = this.lists.slice();
-    listArr[index] = todoList;
+    const itemIndex = listArr.findIndex(list => list.id === todoList.id);
+    listArr[itemIndex] = todoList;
     this.lists = listArr;
     localStorage.setItem(this.localStorageKey, JSON.stringify(this.lists));
     this.listCreated$.next();
@@ -65,20 +56,23 @@ export class AppService {
     return [];
   }
 
-  getTodoListByIndex(index: number): List | null {
-    if (index < 0) return null;
+  getTodoListByIndex(id: string): List | null {
+    if (!id) return null;
 
     if (this.lists.length === 0) {
 
     }
 
-    return this.lists[index];
+    const foundItem = this.lists.find(list => list.id === id)!;
+
+    return foundItem;
   }
 
-  deleteTodoList(index: number) {
-    this.lists = [...this.lists.slice(0, index), ...this.lists.slice(index + 1)];
-    if (this.pinnedLists.includes(index)) {
-      this.pinnedLists = this.pinnedLists.filter(i => i !== index);
+  deleteTodoList(id: string) {
+    const itemIndex = this.lists.findIndex(list => list.id === id);
+    this.lists = [...this.lists.slice(0, itemIndex), ...this.lists.slice(itemIndex + 1)];
+    if (this.pinnedLists.includes(id)) {
+      this.pinnedLists = this.pinnedLists.filter(i => i !== id);
       localStorage.setItem(this.pinnedLocalStorageKey, JSON.stringify(this.pinnedLists));
     }
     localStorage.setItem(this.localStorageKey, JSON.stringify(this.lists));
@@ -98,14 +92,14 @@ export class AppService {
     return this.pinnedLists.slice();
   }
 
-  pinTodoList(index: number) {
-    this.pinnedLists.push(index);
+  pinTodoList(id: string) {
+    this.pinnedLists.push(id);
     localStorage.setItem(this.pinnedLocalStorageKey, JSON.stringify(this.pinnedLists));
     this.listCreated$.next();
   }
 
-  unpinTodoList(index: number) {
-    this.pinnedLists = this.pinnedLists.filter(i => i !== index);
+  unpinTodoList(id: string) {
+    this.pinnedLists = this.pinnedLists.filter(i => i !== id);
     localStorage.setItem(this.pinnedLocalStorageKey, JSON.stringify(this.pinnedLists));
     this.listCreated$.next();
   }

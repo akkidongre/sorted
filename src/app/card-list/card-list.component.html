@@ -1,23 +1,28 @@
-<ng-container *ngIf="pinnedIndices.length > 0">
-    <div class="d-flex justify-content-between align-items-center">
-        <h5 class="text-primary m-0">Pinned Lists</h5>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="text-primary mb-0">Your Lists</h5>
+    <div class="d-flex align-items-center">
+        <label for="sort-select" class="sort-label text-secondary">Sorting order: </label>
+        <select name="sort-select" id="sort-select" class="form-select" [(ngModel)]="sortOrder" (change)="sortLists()">
+            <option value="asc">ascending</option>
+            <option value="desc">descending</option>
+        </select>
     </div>
-    <div class="card-container pt-4 pb-4">
-        <ng-container *ngFor="let listItem of lists; let i = index;">
-            <app-card *ngIf="pinnedIndices.includes(i)" [list]="listItem" [index]="i" [pinned]="true"></app-card>
+</div>
+
+<ng-container *ngIf="pinnedIds.length > 0">
+    <div class="text-secondary">Pinned</div>
+    <div class="card-container pt-2 pb-4">
+        <ng-container *ngFor="let listItem of pinnedLists; let i = index;">
+            <app-card [list]="listItem" [pinned]="true"></app-card>
         </ng-container>
     </div>
 </ng-container>
 
-<ng-container *ngIf="lists.length > pinnedIndices.length">
-    <div class="d-flex justify-content-between align-items-center">
-        <h5 class="text-primary m-0">
-            {{ pinnedIndices.length > 0 ? 'Others' : 'Your Lists' }}
-        </h5>
-    </div>
-    <div class="card-container pt-4 pb-4">
-        <ng-container *ngFor="let listItem of lists; let i = index;">
-            <app-card *ngIf="!pinnedIndices.includes(i)" [list]="listItem" [index]="i" [pinned]="false"></app-card>
+<ng-container *ngIf="lists.length > pinnedIds.length">
+    <div class="text-secondary" *ngIf="pinnedIds.length > 0">Others</div>
+    <div class="card-container pt-2 pb-4">
+        <ng-container *ngFor="let listItem of otherLists; let i = index;">
+            <app-card [list]="listItem" [pinned]="false"></app-card>
         </ng-container>
     </div>
 </ng-container>

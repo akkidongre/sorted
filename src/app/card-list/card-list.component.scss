@@ -32,3 +32,17 @@
         grid-template-columns: repeat(8, minmax(0, 1fr));
     }
 }
+
+.sort-label {
+    white-space: nowrap;
+}
+
+.form-select {
+    border: 0;
+    box-shadow: none;
+    cursor: pointer;
+
+    &:hover, &:focus, &:active {
+        box-shadow: none;
+    }
+}

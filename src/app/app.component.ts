@@ -19,8 +19,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.appService.selectedList$.subscribe((index) => {
-      if (index < 0) {
+    this.subscription = this.appService.selectedList$.subscribe((id) => {
+      if (!id) {
         this.showEditTodo = false;
       } else {
         this.showEditTodo = true;
