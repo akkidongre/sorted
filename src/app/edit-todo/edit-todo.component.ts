@@ -19,7 +19,7 @@ export class EditTodoComponent implements OnInit, OnDestroy {
   }
 
   onClose() {
-    this.appService.selectedList$.next(-1);
+    this.appService.selectedList$.next('');
   }
   
   ngOnDestroy(): void {

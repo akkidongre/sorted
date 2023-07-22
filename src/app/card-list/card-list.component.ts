@@ -10,7 +10,12 @@ import { Subscription } from 'rxjs';
 })
 export class CardListComponent implements OnInit, OnDestroy {
   lists: List[] = [];
-  pinnedIndices: number[] = [];
+  pinnedIds: string[] = [];
+  pinnedLists: List[] = [];
+  otherLists: List[] = [];
+  sortedLists: List[] = [];
+
+  sortOrder: "asc" | "desc" = "desc";
 
   private subscription = new Subscription();
 
@@ -19,19 +24,48 @@ export class CardListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getAndSortLists();
+    this.getLists();
+    this.sortLists();
     this.updateOnListCreated();
   }
 
   updateOnListCreated() {
     this.subscription = this.appService.listCreated$.subscribe(() => {
-      this.getAndSortLists();
+      this.getLists();
+      this.sortLists();
     });
   }
 
-  getAndSortLists() {
+  getLists() {
     this.lists = this.appService.getTodoLists();
-    this.pinnedIndices = this.appService.getPinnedLists();
+    this.pinnedIds = this.appService.getPinnedLists();
+
+    this.pinnedLists = this.lists.filter(list => this.pinnedIds.includes(list.id));
+    this.otherLists = this.lists.filter(list => !this.pinnedIds.includes(list.id));
+  }
+
+  sortLists() {
+    this.pinnedLists = this.pinnedLists.sort((list1, list2) => {
+      const date1 = new Date(list1.updatedAt);
+      const date2 = new Date(list2.updatedAt);
+
+      if (this.sortOrder === 'asc') {
+        return date1.getTime() - date2.getTime();
+      } else {
+        return date2.getTime() - date1.getTime();
+      }
+    });
+
+    this.otherLists = this.otherLists.sort((list1, list2) => {
+      const date1 = new Date(list1.updatedAt);
+      const date2 = new Date(list2.updatedAt);
+
+      if (this.sortOrder === 'asc') {
+        return date1.getTime() - date2.getTime();
+      } else {
+        return date2.getTime() - date1.getTime();
+      }
+    });
   }
 
   ngOnDestroy(): void {

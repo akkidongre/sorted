@@ -20,7 +20,7 @@ export class FormComponent {
     todoList: this.fb.array([])
   });
 
-  selectedListIndex: number = -1;
+  selectedListId: string = '';
   selectedList!: List | null;
 
   @ViewChildren('listItem') allListItems!: QueryList<FormFieldComponent>;
@@ -38,9 +38,9 @@ export class FormComponent {
 
   ngOnInit(): void {
     if (this.formMode === 'edit') {
-      const selectedListIndexSub = this.appService.selectedList$.subscribe((index) => {
-        this.selectedListIndex = index;
-        this.selectedList = this.appService.getTodoListByIndex(index);
+      const selectedListIndexSub = this.appService.selectedList$.subscribe((id) => {
+        this.selectedListId = id;
+        this.selectedList = this.appService.getTodoListByIndex(id);
   
         if (this.selectedList) {
           this.patchValuesToForm();
@@ -155,7 +155,7 @@ export class FormComponent {
     if (this.formMode === 'add') {
       this.appService.saveTodoList(this.todoListForm.value);
     } else {
-      this.appService.updateTodoList(this.todoListForm.value, this.selectedListIndex);
+      this.appService.updateTodoList(this.todoListForm.value);
     }
     this.resetForm();
     this.save.emit();
